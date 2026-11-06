@@ -1,4 +1,5 @@
 results/
 videos/
+figures/
 *.asv
 .DS_Store

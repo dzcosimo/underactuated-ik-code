@@ -1,57 +1,68 @@
-# Underactuated inverse kinematics: MATLAB code
+# Code release: kinematic inversion for underactuated (soft) robots
 
-Code for the simulations of the paper
+MATLAB code for the simulations of
 
-> C. Della Santina, *Pushing the boundaries of actuators-to-task kinematic inversion: from fully actuated to underactuated (soft) robots*, The International Journal of Robotics Research, in press.
+> C. Della Santina, *Pushing the boundaries of actuators-to-task kinematic inversion: from fully
+> actuated to underactuated (soft) robots*, The International Journal of Robotics Research, in press.
 
-Project page with explainer videos, interactive demos and the simulation videos: https://dzcosimo.github.io/underactuated-ik/
+Project page, with explainer videos, interactive demos and the simulation videos:
+https://dzcosimo.github.io/underactuated-ik/
 
-> **About this release.** This repository is a Claude-generated version (Anthropic's Claude, used as a coding assistant) of a code base originally written entirely by the author, Cosimo Della Santina. Claude reorganized, documented and repackaged the original code. The methods and the original implementation are the author's.
+> **About this release.** This code release is a Claude-generated version (Anthropic's Claude,
+> used as a coding assistant) of a code base originally written entirely by the author,
+> Cosimo Della Santina. Claude ported, reorganized, documented and packaged the original code.
+
+The paper proposes two closed-loop inverse kinematics (CLIK) algorithms for underactuated robots.
+Both compute a reference configuration that a low-level controller tracks, so that a task variable
+reaches a target:
+
+* **Algorithm 1** inverts the end-to-end map from actuated coordinates to task through an
+  explicit parametrization of the robot's statics, qu = φ(qa).
+* **Algorithm 2** needs no explicit statics. It moves along the manifold of attainable equilibria
+  (Gu = 0) with a task component (projector P_E) and a statics-relaxation component (projector P_Z).
+
+Each algorithm can run in **feedforward** (task error computed on the CLIK state) or
+**feedback** form (task error from the measured robot).
 
 ## Contents
 
-| Folder | System | What it shows |
+| Folder | System | What it reproduces |
 |---|---|---|
-| [`pcc/`](pcc) | Planar soft arm, piecewise constant curvature: 5 curvature segments, 2 actuated sections, total length 1 m | Algorithms 1 and 2, feedforward and feedback, on a stiff and a soft arm (paper, Figs. 18 and 19), plus a three-target sequence and Algorithm 1 with gravity in its statics |
-| [`ballerina/`](ballerina) | Planar dancer on an elastic pointe: 3 actuated joints, 1 passive spring joint, task = centre of mass | Both algorithms on a redundant task (3 actuators, 2D task), with model mismatch and with an unstable target equilibrium |
+| [`double_pendulum/`](double_pendulum/README.md) | tendon-driven double pendulum (n = 2, one input) | Figs. 7, 10-13, 15-16: Alg. 1 and Alg. 2 examples, vector fields, Alg. 2 as a feedback loop |
+| [`pcc/`](pcc/README.md) | planar soft robot, 5 constant-curvature segments, 2 inputs | Figs. 18-19 (stiff and soft robot, four CLIK variants), plus: Alg. 1 with gravity approximated to first and second order, and three targets in sequence (triangle) |
+| [`ballerina/`](ballerina/README.md) | planar "ballerina" on an elastic pointe, 3 actuated joints, CoM task | the balancing robot of Fig. 1(b) in simplified form; redundant case (more actuators than task variables) handled with the pseudoinverse |
 
-Both folders follow the same pattern: `src/` holds the algorithms and the simulation, `model/` the dynamic model (generated functions are included, so no Symbolic Math Toolbox is needed to run).
-
-Naming of the variants, used everywhere:
-
-| Code | Meaning |
-|---|---|
-| `a1ff`, `a1fb` | Algorithm 1 (statics solved beforehand), feedforward / feedback |
-| `a2ff`, `a2fb` | Algorithm 2 (statics solved online), feedforward / feedback |
-
-Feedforward: the task error is computed on the CLIK state, `e = x_bar - h(q_bar)`. Feedback: on the measured robot, `e = x_bar - h(q)`. In both cases a low-level controller `tau = G_a(q_bar) + P (qa_bar - qa) (- D qa')` tracks the CLIK output.
-
-## Quick start
-
-```matlab
-% soft arm, one case (a few minutes for a stiff case, 0.5-2 h for a soft one)
-cd pcc
-R = run_pcc_case('stiff_a2fb');      % list all cases with {pcc_cases().name}
-
-% ballerina, all seven scenarios (about 0.5 s each) and the results tables
-cd ../ballerina
-run_all_ballerina
-make_videos_ballerina                % videos, needs MATLAB R2025a or later
-```
-
-`pcc/run_all_pcc.m` runs every soft-arm case (15-20 h sequentially; see the file for running them in parallel, and `SMOKE = true` for a 1-3 min installation check).
+Each folder is **self-contained**: its own README, entry-point scripts, source code, model
+functions. The folders do not depend on each other. To keep the repository small, it leaves out
+the rendered videos, figures and result files that the READMEs mention: the scripts recreate them,
+and the videos are on the project page.
 
 ## Requirements
 
-- MATLAB. Video rendering of the ballerina uses `theme()` (R2025a or later).
-- Optional: Symbolic Math Toolbox, only to regenerate `ballerina/model/` after changing `bal_params.m`; Parallel Computing Toolbox, only for `USE_PARFOR` in `run_all_pcc.m`.
+* MATLAB, tested with **R2025a**. The figure and video scripts use `theme`, so they need R2025a or newer.
+* No toolbox is needed to run the simulations, figures and videos. The symbolic model-generation
+  scripts (optional: the generated functions are included) need the Symbolic Math Toolbox.
+* No Simulink: all simulations are plain MATLAB. The original Simulink implementations of the
+  double-pendulum and PCC examples were ported and checked against them (see each README).
 
-## Notes
+## Quick start
 
-- `pcc/model/generated/` was generated with the parameters in `pcc/src/pcc_params.m`. The generator script (`model/generate_pcc_model.m`, mentioned in the comments) is not part of this release. Stiffness can still be changed at run time through `kscale` (see `pcc/src/pcc_model.m`).
-- Results (`results/*.mat`) and videos are not stored in the repository; the scripts recreate them.
+Work in one folder at a time: start MATLAB in that folder, or `cd` into it. Do not put two folders
+on the path together, because they share function names (e.g. `clik_alg1`, `setup_paths`).
 
-## Citation
+```matlab
+cd double_pendulum;  run_all_double_pendulum   % about 2 min; writes figures/
+cd ../ballerina;     run_all_ballerina         % about 10 s; writes results/ and prints the tables
+cd ../pcc;           run_all_pcc               % hours (see pcc/README.md); or run_pcc_case('<case>')
+```
+
+Videos are re-rendered with `make_videos_pcc` and `make_videos_ballerina` (see the READMEs).
+The rendered videos are on the project page. All videos run in
+real time: 1 s of video is 1 s of simulated time.
+
+## Citation and license
+
+If you use this code, please cite the paper:
 
 ```bibtex
 @article{dellasantina2026underactuated,
@@ -63,6 +74,4 @@ make_videos_ballerina                % videos, needs MATLAB R2025a or later
 }
 ```
 
-## License
-
-MIT, see [LICENSE](LICENSE).
+License: MIT, see [LICENSE](LICENSE).
