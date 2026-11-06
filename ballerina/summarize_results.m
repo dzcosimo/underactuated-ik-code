@@ -1,7 +1,7 @@
 function S = summarize_results()
 %SUMMARIZE_RESULTS  Results tables of the saved ballerina runs (results/*.mat), printed as Markdown.
 %
-%   S = summarize_results()   prints two tables and the CPU times,
+%   S = summarize_results()   prints two tables (the same as in README.md) and the CPU times,
 %                             and returns the computed values per run (struct array).
 %
 %   Table 1, per run: task gain Gamma; CoM error |x_ref - x| at the end of each hold and at the

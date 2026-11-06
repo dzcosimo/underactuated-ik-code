@@ -6,7 +6,7 @@
 %   1. adds src/ and model/ to the path (regenerates model/ with gen_symbolic if it is missing;
 %      this needs the Symbolic Math Toolbox, the shipped model/ does not);
 %   2. runs the 7 scenarios of bal_scenario and saves results/<name>.mat (about 0.5 s each);
-%   3. prints the results tables (summarize_results).
+%   3. prints the results tables (summarize_results), the same as in README.md.
 
 root = fileparts(mfilename('fullpath'));
 addpath(fullfile(root, 'src'), fullfile(root, 'model'));
