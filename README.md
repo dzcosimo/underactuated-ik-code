@@ -6,7 +6,7 @@ MATLAB code for the simulations of
 > actuated to underactuated (soft) robots*, The International Journal of Robotics Research, in press.
 
 Project page, with explainer videos, interactive demos and the simulation videos:
-https://dzcosimo.github.io/underactuated-ik/
+https://tud-phi.github.io/underactuated-ik/
 
 > **About this release.** This code release is a Claude-generated version (Anthropic's Claude,
 > used as a coding assistant) of a code base originally written entirely by the author,
