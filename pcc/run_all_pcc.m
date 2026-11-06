@@ -1,19 +1,20 @@
 %RUN_ALL_PCC  Run every simulation case of the PCC soft-robot examples (src/pcc_cases.m) in
-%   sequence and save the results in results/<case>.mat.
+%   sequence and save the results in results/<case>.mat. Afterwards run make_figures_pcc and
+%   make_videos_pcc.
 %
-%   Run times (one core, Apple-silicon laptop, ~0.3-1 ms per step):
-%     stiff single target (Fig. 18), 5e5 steps            ~3-10 min each
-%     stiff triangle, 1.5e6 steps                         ~10-30 min each
-%     soft single target (Fig. 19, 1st/2nd order), 2e6    ~15-40 min (Alg. 1), 1-2 h (Alg. 2)
-%     soft triangle, dt = 3e-5, 2e6 steps                 ~15-55 min each
-%   In total ~15-20 h sequentially. The cases are independent: to run them in parallel, either
+%   Run times (one core each, Apple-silicon laptop; see README.md for the table):
+%     stiff single target (Fig. 18), 5e5 steps            ~3 min (Alg. 1), ~11 min (Alg. 2)
+%     stiff triangle, 1.5e6 steps                         ~10 min (Alg. 1), ~1 h (Alg. 2)
+%     soft single target / triangle, 2e6 steps            ~15 min (Alg. 1, zero/1st order),
+%                                                         ~1.3 h (Alg. 1 2nd order, Alg. 2)
+%   In total ~16 h sequentially. The cases are independent: to run them in parallel, either
 %     - set USE_PARFOR = true below (Parallel Computing Toolbox), or
 %     - start one MATLAB per case from a shell, e.g.
 %         matlab -batch "run_pcc_case('soft_a2fb')" -singleCompThread &
 %       (from this folder; one process per core).
 %
 %   SMOKE = true runs every case for 0.5 s only (results in results/smoke/), as a quick check
-%   of the installation (~1-3 min in total).
+%   of the installation (~15-20 min in total).
 SMOKE = false;
 USE_PARFOR = false;
 

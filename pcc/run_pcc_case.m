@@ -15,7 +15,7 @@ function R = run_pcc_case(name, varargin)
 %   The result is saved as <outdir>/<name>.mat (variable R).
 %
 %   Run times (Apple-silicon laptop, one core): ~0.3-1 ms per integration step, i.e. a few
-%   minutes for a stiff single-target case and 0.5-2 h for a soft case (2e6 steps).
+%   minutes for a stiff single-target case and 15 min-1.5 h for a soft case (2e6 steps).
 root = setup_paths();
 ip = inputParser;
 ip.addParameter('T', []);
